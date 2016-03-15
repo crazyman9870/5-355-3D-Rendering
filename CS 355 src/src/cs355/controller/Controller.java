@@ -10,6 +10,7 @@ import java.util.Iterator;
 import cs355.GUIFunctions;
 import cs355.controller.IControllerState.stateType;
 import cs355.model.drawing.*;
+import cs355.model.scene.Point3D;
 import cs355.solution.CS355;
 
 public class Controller implements CS355Controller {
@@ -26,6 +27,9 @@ public class Controller implements CS355Controller {
 	private boolean updating;
 	private Point2D.Double viewCenter;
 	private IControllerState state;
+	
+	private static final float nearPlane = 1.0f;
+	private static final float farPlane = 250.0f;
 
 	//If the model had not been initialized, it will be.
 	public static Controller instance() {
@@ -322,7 +326,7 @@ public class Controller implements CS355Controller {
 
 	}
 	
-	/* Transforms */
+	/* Transforms - 2D Objects */
 	
 	public AffineTransform objectToWorld(Shape shape) {
 		AffineTransform transform = new AffineTransform();
@@ -409,6 +413,76 @@ public class Controller implements CS355Controller {
 		AffineTransform transform = objectToView(shape);
         transform.transform(pointCopy, pointCopy);
         return pointCopy;
+	}
+	
+	/* Transforms - 3D Objects */
+	
+	public double[] threeDWorldToClip(Point3D point)
+	{
+		/* TODO implement/fix this portion
+		Camera camera = Controller.inst().getCamera();
+		float theta = camera.getYaw();
+		double c_x = camera.getLocation().x;
+		double c_y = camera.getLocation().y;
+		double c_z = camera.getLocation().z; */
+		double e = (farPlane + nearPlane) / (farPlane - nearPlane);
+		double f = (-2 * nearPlane * farPlane) / (farPlane - nearPlane);
+		double zoom = (1 / Math.tan(Math.PI / 6));
+
+//		double x = (-c_x * zoom) * cos(theta) + zoom * point.x * cos(theta) + c_z * zoom * sin(theta) - zoom * point.z * sin(theta);
+//		double y = zoom * point.y - c_y * zoom;
+//		double z = (f) + (e) * point.z * cos(theta) - c_z * (e) * cos(theta) + e * point.x * sin(theta) - c_x * (e) * sin(theta);
+//		double bigW = -c_z * cos(theta) + point.z * cos(theta) - c_x * sin(theta) + point.x * sin(theta);
+
+		/* TODO uncomment when the implmentation above in the same function is fixed
+		 double x = (Math.sqrt(3) * point.x * Math.cos(theta) + Math.sqrt(3) * point.z * Math.sin(theta) + Math.sqrt(3) * (-c_x * Math.cos(theta) - c_z * Math.sin(theta)));
+		 double y = (Math.sqrt(3) * point.y - Math.sqrt(3) * c_y);
+		 double z = (f + e * point.z * Math.cos(theta) - e * x * Math.sin(theta) + e * (c_x * Math.sin(theta) - c_z * Math.cos(theta)));
+		 double bigW = (-c_z * Math.cos(theta) + point.z * Math.cos(theta) + c_x * Math.sin(theta) - point.x * Math.sin(theta));
+
+		double[] result = {x, y, z, bigW};
+		*/
+		double [] result = {0.0, 0.0, 0.0};
+
+		return result;
+	}
+
+	public Point3D clipToScreen(Point3D point)
+	{
+		/* TODO implement/fix
+		double scale = controller.getScaleFactor();
+		double w_x = controller.getWorldViewDiff().getX();
+		double w_y = controller.getWorldViewDiff().getY();
+
+		double x = -w_x + (1024 + 1024 * point.x) * scale;
+		double y = -w_y + 1024 * scale - 1024 * point.y * scale;
+		
+		return new Point3D(x, y, 1);
+		*/
+		return new Point3D();
+	}
+
+	public boolean clipTest(double[] start, double[] end)
+	{
+		double startX = start[0];
+		double startY = start[1];
+		double startZ = start[2];
+		double startW = start[3];
+
+		double endX = end[0];
+		double endY = end[1];
+		double endZ = end[2];
+		double endW = end[3];
+
+		if ((startX > startW && endX > endW) || (startX < -startW && endX < -endW)) return true;
+
+		if ((startY > startW && endY > endW) || (startY < -startW && endY < -endW)) return true;
+
+		if ((startZ > startW && endZ > endW)) return true;
+
+		if (startZ <= -startW || endZ <= -endW) return true;
+
+		return false;
 	}
 	
 	/* Zoom Adjustment */
