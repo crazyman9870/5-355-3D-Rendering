@@ -1,6 +1,7 @@
 package cs355.controller;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
@@ -256,13 +257,56 @@ public class Controller implements CS355Controller {
 
 	@Override
 	public void toggle3DModelDisplay() {
-		// TODO Auto-generated method stub
-
+		this.state = new Controller3DState();
 	}
 
 	@Override
 	public void keyPressed(Iterator<Integer> iterator) {
+		
+		if(this.state.getType() != IControllerState.stateType.THREED)
+			return;
 		// TODO Auto-generated method stub
+		while (iterator.hasNext())
+		{
+			switch(iterator.next())
+			{
+				case KeyEvent.VK_W:
+//					this.camera.moveForward(this.step);
+					break;
+					
+				case KeyEvent.VK_A:
+//					this.camera.strafe(-this.step);
+					break;
+				
+				case KeyEvent.VK_S:
+//					this.camera.moveBackward(this.step);
+					break;
+				
+				case KeyEvent.VK_D:
+//					this.camera.strafe(this.step);
+					break;
+				
+				case KeyEvent.VK_Q:
+//					this.camera.yaw(this.step);
+					break;
+				
+				case KeyEvent.VK_E:
+//					this.camera.yaw(-this.step);
+					break;
+				
+				case KeyEvent.VK_R:
+//					this.camera.changeAltitude(this.step);
+					break;
+				
+				case KeyEvent.VK_F:
+//					this.camera.changeAltitude(-this.step);
+					break;
+				
+				case KeyEvent.VK_H:
+//					this.camera = new Camera(new Point3D(0f, 5f, -25f));
+					break;
+			}
+		}
 
 	}
 

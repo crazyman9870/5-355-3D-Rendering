@@ -5,7 +5,7 @@ import java.awt.event.MouseEvent;
 public interface IControllerState {	
 	
 	public enum stateType {
-		NOTHING, DRAWING, SELECT
+		NOTHING, DRAWING, SELECT, THREED
 	}
 	
 	public void mousePressed(MouseEvent arg0);
