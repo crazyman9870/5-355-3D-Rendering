@@ -34,8 +34,6 @@ public class Controller implements CS355Controller {
 	private IControllerState state;
 	private Camera camera;
 
-
-
 	//If the model had not been initialized, it will be.
 	public static Controller instance() {
 		if (_instance == null) 
@@ -50,10 +48,6 @@ public class Controller implements CS355Controller {
 		this.viewCenter = new Point2D.Double(0,0);
 		this.state = new ControllerNothingState();
 		this.camera = new Camera(new Point3D(0f, 5f, -25f));
-	}
-	
-	public double calculateCenterTriangle(double coord1, double coord2, double coord3) {
-		return ((coord1 + coord2 + coord3) / 3);
 	}
 	
 	/* Mouse Events */
@@ -175,6 +169,59 @@ public class Controller implements CS355Controller {
 		if(!updating)
 			Model.instance().changeMade();
 	}
+
+	@Override
+	public void toggle3DModelDisplay() {
+		this.state = new Controller3DState();
+	}
+
+	@Override
+	public void keyPressed(Iterator<Integer> iterator) {
+		
+		if(this.state.getType() != IControllerState.stateType.THREED)
+			return;
+		
+		while (iterator.hasNext()) {
+			
+			switch(iterator.next())	{
+				case KeyEvent.VK_W:
+					this.camera.moveForward(this.movement);
+					break;
+					
+				case KeyEvent.VK_A:
+					this.camera.strafe(-this.movement);
+					break;
+				
+				case KeyEvent.VK_S:
+					this.camera.moveBackward(this.movement);
+					break;
+				
+				case KeyEvent.VK_D:
+					this.camera.strafe(this.movement);
+					break;
+				
+				case KeyEvent.VK_Q:
+					this.camera.yaw(this.movement);
+					break;
+				
+				case KeyEvent.VK_E:
+					this.camera.yaw(-this.movement);
+					break;
+				
+				case KeyEvent.VK_R:
+					this.camera.changeAltitude(this.movement);
+					break;
+				
+				case KeyEvent.VK_F:
+					this.camera.changeAltitude(-this.movement);
+					break;
+				
+				case KeyEvent.VK_H:
+					this.camera = new Camera(new Point3D(0f, 5f, -25f));
+					break;
+			}
+		}
+	}
 	
 	/* Menu Buttons */
 
@@ -251,67 +298,14 @@ public class Controller implements CS355Controller {
 		}
 	}
 	
-	/* Implement Later */
-
 	@Override
 	public void openScene(File file) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
-	public void toggle3DModelDisplay() {
-		this.state = new Controller3DState();
-	}
-
-	@Override
-	public void keyPressed(Iterator<Integer> iterator) {
-		
-		if(this.state.getType() != IControllerState.stateType.THREED)
-			return;
-		
-		while (iterator.hasNext()) {
-			
-			switch(iterator.next())	{
-				case KeyEvent.VK_W:
-					this.camera.moveForward(this.movement);
-					break;
-					
-				case KeyEvent.VK_A:
-					this.camera.strafe(-this.movement);
-					break;
-				
-				case KeyEvent.VK_S:
-					this.camera.moveBackward(this.movement);
-					break;
-				
-				case KeyEvent.VK_D:
-					this.camera.strafe(this.movement);
-					break;
-				
-				case KeyEvent.VK_Q:
-					this.camera.yaw(this.movement);
-					break;
-				
-				case KeyEvent.VK_E:
-					this.camera.yaw(-this.movement);
-					break;
-				
-				case KeyEvent.VK_R:
-					this.camera.changeAltitude(this.movement);
-					break;
-				
-				case KeyEvent.VK_F:
-					this.camera.changeAltitude(-this.movement);
-					break;
-				
-				case KeyEvent.VK_H:
-					this.camera = new Camera(new Point3D(0f, 5f, -25f));
-					break;
-			}
-		}
-	}
-
+	/* Implement Later */
+	
 	@Override
 	public void openImage(File file) {
 		// TODO Auto-generated method stub
@@ -555,5 +549,15 @@ public class Controller implements CS355Controller {
 		Model.instance().changeMade();
 		
 		this.updating = false;
+	}
+	
+	/* Misc Functions */
+	
+	public double calculateCenterTriangle(double coord1, double coord2, double coord3) {
+		return ((coord1 + coord2 + coord3) / 3);
+	}
+	
+	public IControllerState.stateType getState() {
+		return this.state.getType();
 	}
 }
