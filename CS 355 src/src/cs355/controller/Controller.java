@@ -8,6 +8,7 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.util.Iterator;
 
+import cs355.Camera;
 import cs355.GUIFunctions;
 import cs355.controller.IControllerState.stateType;
 import cs355.model.drawing.*;
@@ -22,15 +23,18 @@ public class Controller implements CS355Controller {
 	public static final double ZOOMOUT = .5;
 	public static final double ZOOMMIN = .25;
 	public static final double ZOOMMAX = 4.0;
+	private static final float nearPlane = 1.0f;
+	private static final float farPlane = 250.0f;
+	private final float movement = 1.2f;
 	
 	private double zoom;
 	private double scrollerSize;
 	private boolean updating;
 	private Point2D.Double viewCenter;
 	private IControllerState state;
-	
-	private static final float nearPlane = 1.0f;
-	private static final float farPlane = 250.0f;
+	private Camera camera;
+
+
 
 	//If the model had not been initialized, it will be.
 	public static Controller instance() {
@@ -45,7 +49,7 @@ public class Controller implements CS355Controller {
 		this.updating = false;
 		this.viewCenter = new Point2D.Double(0,0);
 		this.state = new ControllerNothingState();
-		
+		this.camera = new Camera(new Point3D(0f, 5f, -25f));
 	}
 	
 	public double calculateCenterTriangle(double coord1, double coord2, double coord3) {
@@ -265,49 +269,47 @@ public class Controller implements CS355Controller {
 		
 		if(this.state.getType() != IControllerState.stateType.THREED)
 			return;
-		// TODO Auto-generated method stub
-		while (iterator.hasNext())
-		{
-			switch(iterator.next())
-			{
+		
+		while (iterator.hasNext()) {
+			
+			switch(iterator.next())	{
 				case KeyEvent.VK_W:
-//					this.camera.moveForward(this.step);
+					this.camera.moveForward(this.movement);
 					break;
 					
 				case KeyEvent.VK_A:
-//					this.camera.strafe(-this.step);
+					this.camera.strafe(-this.movement);
 					break;
 				
 				case KeyEvent.VK_S:
-//					this.camera.moveBackward(this.step);
+					this.camera.moveBackward(this.movement);
 					break;
 				
 				case KeyEvent.VK_D:
-//					this.camera.strafe(this.step);
+					this.camera.strafe(this.movement);
 					break;
 				
 				case KeyEvent.VK_Q:
-//					this.camera.yaw(this.step);
+					this.camera.yaw(this.movement);
 					break;
 				
 				case KeyEvent.VK_E:
-//					this.camera.yaw(-this.step);
+					this.camera.yaw(-this.movement);
 					break;
 				
 				case KeyEvent.VK_R:
-//					this.camera.changeAltitude(this.step);
+					this.camera.changeAltitude(this.movement);
 					break;
 				
 				case KeyEvent.VK_F:
-//					this.camera.changeAltitude(-this.step);
+					this.camera.changeAltitude(-this.movement);
 					break;
 				
 				case KeyEvent.VK_H:
-//					this.camera = new Camera(new Point3D(0f, 5f, -25f));
+					this.camera = new Camera(new Point3D(0f, 5f, -25f));
 					break;
 			}
 		}
-
 	}
 
 	@Override
@@ -442,8 +444,7 @@ public class Controller implements CS355Controller {
         return pointCopy;
 	}
 	
-	public Point2D.Double worldPointToViewPoint(Point2D.Double point)
-	{
+	public Point2D.Double worldPointToViewPoint(Point2D.Double point) {
 		Point2D.Double pointCopy = new Point2D.Double(point.getX(), point.getY());
 		AffineTransform transform = new AffineTransform();
 		transform.concatenate(new AffineTransform(zoom, 0, 0, zoom, 0, 0)); //scale
@@ -461,53 +462,40 @@ public class Controller implements CS355Controller {
 	
 	/* Transforms - 3D Objects */
 	
-	public double[] threeDWorldToClip(Point3D point)
-	{
-		/* TODO implement/fix this portion
-		Camera camera = Controller.inst().getCamera();
+	public double[] threeDWorldToClip(Point3D point) {
 		float theta = camera.getYaw();
 		double c_x = camera.getLocation().x;
 		double c_y = camera.getLocation().y;
-		double c_z = camera.getLocation().z; */
+		double c_z = camera.getLocation().z;
 		double e = (farPlane + nearPlane) / (farPlane - nearPlane);
 		double f = (-2 * nearPlane * farPlane) / (farPlane - nearPlane);
-		double zoom = (1 / Math.tan(Math.PI / 6));
+//		double zoom = (1 / Math.tan(Math.PI / 6));
 
 //		double x = (-c_x * zoom) * cos(theta) + zoom * point.x * cos(theta) + c_z * zoom * sin(theta) - zoom * point.z * sin(theta);
 //		double y = zoom * point.y - c_y * zoom;
 //		double z = (f) + (e) * point.z * cos(theta) - c_z * (e) * cos(theta) + e * point.x * sin(theta) - c_x * (e) * sin(theta);
 //		double bigW = -c_z * cos(theta) + point.z * cos(theta) - c_x * sin(theta) + point.x * sin(theta);
 
-		/* TODO uncomment when the implmentation above in the same function is fixed
 		 double x = (Math.sqrt(3) * point.x * Math.cos(theta) + Math.sqrt(3) * point.z * Math.sin(theta) + Math.sqrt(3) * (-c_x * Math.cos(theta) - c_z * Math.sin(theta)));
 		 double y = (Math.sqrt(3) * point.y - Math.sqrt(3) * c_y);
 		 double z = (f + e * point.z * Math.cos(theta) - e * x * Math.sin(theta) + e * (c_x * Math.sin(theta) - c_z * Math.cos(theta)));
 		 double bigW = (-c_z * Math.cos(theta) + point.z * Math.cos(theta) + c_x * Math.sin(theta) - point.x * Math.sin(theta));
 
 		double[] result = {x, y, z, bigW};
-		*/
-		double [] result = {0.0, 0.0, 0.0};
 
 		return result;
 	}
 
-	public Point3D clipToScreen(Point3D point)
-	{
-		/* TODO implement/fix
-		double scale = controller.getScaleFactor();
-		double w_x = controller.getWorldViewDiff().getX();
-		double w_y = controller.getWorldViewDiff().getY();
-
-		double x = -w_x + (1024 + 1024 * point.x) * scale;
-		double y = -w_y + 1024 * scale - 1024 * point.y * scale;
+	public Point3D clipToScreen(Point3D point) {
+		
+		double x = -viewCenter.x + (1024 + 1024 * point.x) * zoom;
+		double y = viewCenter.y + 1024 * zoom - 1024 * point.y * zoom;
 		
 		return new Point3D(x, y, 1);
-		*/
-		return new Point3D();
 	}
 
-	public boolean clipTest(double[] start, double[] end)
-	{
+	public boolean clipTest(double[] start, double[] end) {
+		
 		double startX = start[0];
 		double startY = start[1];
 		double startZ = start[2];
