@@ -172,6 +172,7 @@ public class Controller implements CS355Controller {
 
 	@Override
 	public void toggle3DModelDisplay() {
+		System.out.println("3D BUTTON");
 		this.state = new Controller3DState();
 	}
 

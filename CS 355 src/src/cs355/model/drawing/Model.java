@@ -101,7 +101,7 @@ public class Model extends CS355Drawing {
 	@Override
 	public int addShape(Shape s) {
 		shapes.add(s);
-		System.out.println(shapes.size());
+//		System.out.println(shapes.size());
 		return shapes.size();
 	}
 

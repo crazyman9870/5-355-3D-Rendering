@@ -2,9 +2,11 @@ package cs355.controller;
 
 import java.awt.event.MouseEvent;
 
-import cs355.controller.IControllerState.stateType;
-
 public class Controller3DState implements IControllerState {
+	
+	public Controller3DState() {
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
