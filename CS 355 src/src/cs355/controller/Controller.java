@@ -174,6 +174,8 @@ public class Controller implements CS355Controller {
 	public void toggle3DModelDisplay() {
 		System.out.println("3D BUTTON");
 		this.state = new Controller3DState();
+		Model.instance().changeMade();
+		
 	}
 
 	@Override
@@ -222,6 +224,8 @@ public class Controller implements CS355Controller {
 					break;
 			}
 		}
+		
+		GUIFunctions.refresh();
 	}
 	
 	/* Menu Buttons */
@@ -465,16 +469,21 @@ public class Controller implements CS355Controller {
 		double e = (farPlane + nearPlane) / (farPlane - nearPlane);
 		double f = (-2 * nearPlane * farPlane) / (farPlane - nearPlane);
 //		double zoom = (1 / Math.tan(Math.PI / 6));
-
-//		double x = (-c_x * zoom) * cos(theta) + zoom * point.x * cos(theta) + c_z * zoom * sin(theta) - zoom * point.z * sin(theta);
+//
+//		double x = (-c_x * zoom) * Math.cos(theta) + zoom * point.x * Math.cos(theta) + c_z * zoom * Math.sin(theta) - zoom * point.z * Math.sin(theta);
 //		double y = zoom * point.y - c_y * zoom;
-//		double z = (f) + (e) * point.z * cos(theta) - c_z * (e) * cos(theta) + e * point.x * sin(theta) - c_x * (e) * sin(theta);
-//		double bigW = -c_z * cos(theta) + point.z * cos(theta) - c_x * sin(theta) + point.x * sin(theta);
+//		double z = (f) + (e) * point.z * Math.cos(theta) - c_z * (e) * Math.cos(theta) + e * point.x * Math.sin(theta) - c_x * (e) * Math.sin(theta);
+//		double bigW = -c_z * Math.cos(theta) + point.z * Math.cos(theta) - c_x * Math.sin(theta) + point.x * Math.sin(theta);
 
-		 double x = (Math.sqrt(3) * point.x * Math.cos(theta) + Math.sqrt(3) * point.z * Math.sin(theta) + Math.sqrt(3) * (-c_x * Math.cos(theta) - c_z * Math.sin(theta)));
-		 double y = (Math.sqrt(3) * point.y - Math.sqrt(3) * c_y);
-		 double z = (f + e * point.z * Math.cos(theta) - e * x * Math.sin(theta) + e * (c_x * Math.sin(theta) - c_z * Math.cos(theta)));
-		 double bigW = (-c_z * Math.cos(theta) + point.z * Math.cos(theta) + c_x * Math.sin(theta) - point.x * Math.sin(theta));
+		double x = (Math.sqrt(3) * point.x * Math.cos(theta) + Math.sqrt(3) * point.z * Math.sin(theta) + Math.sqrt(3) * (-c_x * Math.cos(theta) - c_z * Math.sin(theta)));
+		double y = (Math.sqrt(3) * point.y - Math.sqrt(3) * c_y);
+		double z = (f + e * point.z * Math.cos(theta) - e * x * Math.sin(theta) + e * (c_x * Math.sin(theta) - c_z * Math.cos(theta)));
+		double bigW = (-c_z * Math.cos(theta) + point.z * Math.cos(theta) + c_x * Math.sin(theta) - point.x * Math.sin(theta));
+		
+//		double x = point.x * zoom;
+//		double y = point.y * zoom;
+//		double z = point.z * e + f;
+//		double bigW = point.z;
 
 		double[] result = {x, y, z, bigW};
 
@@ -484,7 +493,7 @@ public class Controller implements CS355Controller {
 	public Point3D clipToScreen(Point3D point) {
 		
 		double x = -viewCenter.x + (1024 + 1024 * point.x) * zoom;
-		double y = viewCenter.y + 1024 * zoom - 1024 * point.y * zoom;
+		double y = -viewCenter.y + 1024 * zoom - 1024 * point.y * zoom;
 		
 		return new Point3D(x, y, 1);
 	}

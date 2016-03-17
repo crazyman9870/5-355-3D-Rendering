@@ -63,11 +63,10 @@ public class View implements ViewRefresher {
 				
 				if (!Controller.instance().clipTest(startCoord, endCoord))
 				{
-//					System.out.println("Passed the clip test");
+					System.out.println("Passed the clip test");
 					Point3D start = Controller.instance().clipToScreen(new Point3D(startCoord[0] / startCoord[3], startCoord[1] / startCoord[3], startCoord[2] / startCoord[3]));
 					Point3D end = Controller.instance().clipToScreen(new Point3D(endCoord[0] / endCoord[3], endCoord[1] / endCoord[3], endCoord[2] / endCoord[3]));
 
-					
 //					g2d.setTransform(new AffineTransform());
 
 					g2d.drawLine((int) Math.round(start.x), (int) Math.round(start.y), (int) Math.round(end.x), (int) Math.round(end.y));
