@@ -9,6 +9,7 @@ import java.util.List;
 
 import cs355.GUIFunctions;
 import cs355.controller.Controller;
+import cs355.model.scene.HouseModel;
 
 public class Model extends CS355Drawing {
 
@@ -19,6 +20,7 @@ public class Model extends CS355Drawing {
 	private Color selectedColor;
 	private int selectedShapeIndex;
 	private ArrayList<Shape> shapes;
+	private ArrayList<HouseModel> hood;
 
 
 	//If the model had not been initialized, it will be.
@@ -33,6 +35,8 @@ public class Model extends CS355Drawing {
 		selectedColor = Color.WHITE;
 		selectedShapeIndex = -1;
 		shapes = new ArrayList<Shape>();
+		hood = new ArrayList<>();
+		inTheHood();
 	}
 	
 	//Notifies the observers
@@ -210,5 +214,21 @@ public class Model extends CS355Drawing {
 	public void changeMade() {
 		setChanged();
 		notifyObservers();
+	}
+	
+	private void inTheHood() {
+		hood.add(new HouseModel());
+	}
+
+	public ArrayList<HouseModel> getHood() {
+		return hood;
+	}
+
+	public void setHood(ArrayList<HouseModel> hood) {
+		this.hood = hood;
+	}
+	
+	public HouseModel getCribByIndex(int i) {
+		return hood.get(i);
 	}
 }

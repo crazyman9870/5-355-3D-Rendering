@@ -47,7 +47,7 @@ public class Controller implements CS355Controller {
 		this.updating = false;
 		this.viewCenter = new Point2D.Double(0,0);
 		this.state = new ControllerNothingState();
-		this.camera = new Camera(new Point3D(0f, 5f, -25f));
+		this.camera = new Camera(new Point3D(0f, 1.5f, -25f));
 	}
 	
 	/* Mouse Events */
@@ -220,7 +220,7 @@ public class Controller implements CS355Controller {
 					break;
 				
 				case KeyEvent.VK_H:
-					this.camera = new Camera(new Point3D(0f, 5f, -25f));
+					this.camera = new Camera(new Point3D(0f, 1.5f, -25f));
 					break;
 			}
 		}
