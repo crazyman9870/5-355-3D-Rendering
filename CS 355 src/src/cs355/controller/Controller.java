@@ -104,6 +104,7 @@ public class Controller implements CS355Controller {
 		Model.instance().setSelectedShapeIndex(-1);
 		Model.instance().setCurrentShape(Shape.type.LINE);
 		this.state = new ControllerDrawingState();
+		GUIFunctions.refresh();
 	}
 
 	@Override
@@ -111,6 +112,7 @@ public class Controller implements CS355Controller {
 		Model.instance().setSelectedShapeIndex(-1);
 		Model.instance().setCurrentShape(Shape.type.SQUARE);
 		this.state = new ControllerDrawingState();
+		GUIFunctions.refresh();
 	}
 
 	@Override
@@ -118,6 +120,7 @@ public class Controller implements CS355Controller {
 		Model.instance().setSelectedShapeIndex(-1);
 		Model.instance().setCurrentShape(Shape.type.RECTANGLE);
 		this.state = new ControllerDrawingState();
+		GUIFunctions.refresh();
 	}
 
 	@Override
@@ -125,6 +128,7 @@ public class Controller implements CS355Controller {
 		Model.instance().setSelectedShapeIndex(-1);
 		Model.instance().setCurrentShape(Shape.type.CIRCLE);
 		this.state = new ControllerDrawingState();
+		GUIFunctions.refresh();
 	}
 
 	@Override
@@ -132,6 +136,7 @@ public class Controller implements CS355Controller {
 		Model.instance().setSelectedShapeIndex(-1);
 		Model.instance().setCurrentShape(Shape.type.ELLIPSE);
 		this.state = new ControllerDrawingState();
+		GUIFunctions.refresh();
 	}
 
 	@Override
@@ -139,11 +144,13 @@ public class Controller implements CS355Controller {
 		Model.instance().setSelectedShapeIndex(-1);
 		Model.instance().setCurrentShape(Shape.type.TRIANGLE);
 		this.state = new ControllerDrawingState();
+		GUIFunctions.refresh();
 	}
 	
 	@Override
 	public void selectButtonHit() {
 		this.state = new ControllerSelectState();
+		GUIFunctions.refresh();
 	}
 
 	@Override
@@ -240,7 +247,11 @@ public class Controller implements CS355Controller {
 		Model.instance().open(file);
 		GUIFunctions.refresh();
 	}
-	
+
+	@Override
+	public void openScene(File file) {
+		// TODO Auto-generated method stub
+	}
 
 	@Override
 	public void doMoveForward() {
@@ -301,12 +312,6 @@ public class Controller implements CS355Controller {
 				Model.instance().changeMade();
 			}
 		}
-	}
-	
-	@Override
-	public void openScene(File file) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/* Implement Later */
