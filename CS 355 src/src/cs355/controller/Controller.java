@@ -492,9 +492,11 @@ public class Controller implements CS355Controller {
 
 	public Point3D clipToScreen(Point3D point) {
 		
-		double x = -viewCenter.x + (1024 + 1024 * point.x) * zoom;
-		double y = -viewCenter.y + 1024 * zoom - 1024 * point.y * zoom;
-		
+//		double x = (-viewCenter.x + 1024 + (1024 * point.x)) * zoom;
+//		double y = -viewCenter.y + 1024 * zoom - 1024 * point.y * zoom;
+//		double y = (-viewCenter.y + 1024 - (1024 * point.y)) * zoom;
+		double x = 1024 + (1024 * point.x);
+		double y = 1024 - (1024 * point.y);
 		return new Point3D(x, y, 1);
 	}
 
