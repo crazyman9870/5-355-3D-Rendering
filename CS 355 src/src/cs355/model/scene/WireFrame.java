@@ -17,6 +17,7 @@ public class WireFrame {
 	 * Basic constructor. Makes an empty list of lines.
 	 */
 	public WireFrame() {
+//		lines = (ArrayList<Line3D>) new HouseModel().getLines();
 		lines = new ArrayList<>();
 	}
 

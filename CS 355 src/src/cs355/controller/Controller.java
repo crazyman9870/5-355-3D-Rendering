@@ -13,7 +13,9 @@ import cs355.GUIFunctions;
 import cs355.controller.IControllerState.stateType;
 import cs355.model.drawing.*;
 import cs355.model.scene.Point3D;
+import cs355.model.scene.SceneModel;
 import cs355.solution.CS355;
+import javafx.scene.Scene;
 
 public class Controller implements CS355Controller {
 
@@ -32,7 +34,9 @@ public class Controller implements CS355Controller {
 	private boolean updating;
 	private Point2D.Double viewCenter;
 	private IControllerState state;
-	private Camera camera;
+	
+	private Point3D cameraHome;
+	private double rotationHome;
 
 	//If the model had not been initialized, it will be.
 	public static Controller instance() {
@@ -47,7 +51,9 @@ public class Controller implements CS355Controller {
 		this.updating = false;
 		this.viewCenter = new Point2D.Double(0,0);
 		this.state = new ControllerNothingState();
-		this.camera = new Camera(new Point3D(0f, 1.5f, -25f));
+		SceneModel.instance().setCameraPosition(new Point3D(0f, 1.5f, -25f));
+		this.cameraHome = SceneModel.instance().getCameraPosition();
+		this.rotationHome = SceneModel.instance().getCameraRotation();
 	}
 	
 	/* Mouse Events */
@@ -195,39 +201,40 @@ public class Controller implements CS355Controller {
 			
 			switch(iterator.next())	{
 				case KeyEvent.VK_W:
-					this.camera.moveForward(this.movement);
+					SceneModel.instance().moveForward(this.movement);
 					break;
 					
 				case KeyEvent.VK_A:
-					this.camera.strafe(-this.movement);
+					SceneModel.instance().strafe(-this.movement);
 					break;
 				
 				case KeyEvent.VK_S:
-					this.camera.moveBackward(this.movement);
+					SceneModel.instance().moveBackward(this.movement);
 					break;
 				
 				case KeyEvent.VK_D:
-					this.camera.strafe(this.movement);
+					SceneModel.instance().strafe(this.movement);
 					break;
 				
 				case KeyEvent.VK_Q:
-					this.camera.yaw(this.movement);
+					SceneModel.instance().yaw(this.movement/8);
 					break;
 				
 				case KeyEvent.VK_E:
-					this.camera.yaw(-this.movement);
+					SceneModel.instance().yaw(-this.movement/8);
 					break;
 				
 				case KeyEvent.VK_R:
-					this.camera.changeAltitude(this.movement);
+					SceneModel.instance().changeAltitude(this.movement);
 					break;
 				
 				case KeyEvent.VK_F:
-					this.camera.changeAltitude(-this.movement);
+					SceneModel.instance().changeAltitude(-this.movement);
 					break;
 				
 				case KeyEvent.VK_H:
-					this.camera = new Camera(new Point3D(0f, 1.5f, -25f));
+					SceneModel.instance().setCameraPosition(cameraHome);
+					SceneModel.instance().setCameraRotation(rotationHome);
 					break;
 			}
 		}
@@ -250,7 +257,10 @@ public class Controller implements CS355Controller {
 
 	@Override
 	public void openScene(File file) {
-		// TODO Auto-generated method stub
+		SceneModel.instance().open(file);
+		this.cameraHome = SceneModel.instance().getCameraPosition();
+		this.rotationHome = SceneModel.instance().getCameraRotation();
+		GUIFunctions.refresh();
 	}
 
 	@Override
@@ -467,28 +477,17 @@ public class Controller implements CS355Controller {
 	/* Transforms - 3D Objects */
 	
 	public double[] threeDWorldToClip(Point3D point) {
-		float theta = camera.getYaw();
-		double c_x = camera.getLocation().x;
-		double c_y = camera.getLocation().y;
-		double c_z = camera.getLocation().z;
+		float theta = (float) SceneModel.instance().getCameraRotation();
+		double c_x = SceneModel.instance().getCameraPosition().x;
+		double c_y = SceneModel.instance().getCameraPosition().y;
+		double c_z = SceneModel.instance().getCameraPosition().z;
 		double e = (farPlane + nearPlane) / (farPlane - nearPlane);
 		double f = (-2 * nearPlane * farPlane) / (farPlane - nearPlane);
-//		double zoom = (1 / Math.tan(Math.PI / 6));
-//
-//		double x = (-c_x * zoom) * Math.cos(theta) + zoom * point.x * Math.cos(theta) + c_z * zoom * Math.sin(theta) - zoom * point.z * Math.sin(theta);
-//		double y = zoom * point.y - c_y * zoom;
-//		double z = (f) + (e) * point.z * Math.cos(theta) - c_z * (e) * Math.cos(theta) + e * point.x * Math.sin(theta) - c_x * (e) * Math.sin(theta);
-//		double bigW = -c_z * Math.cos(theta) + point.z * Math.cos(theta) - c_x * Math.sin(theta) + point.x * Math.sin(theta);
 
 		double x = (Math.sqrt(3) * point.x * Math.cos(theta) + Math.sqrt(3) * point.z * Math.sin(theta) + Math.sqrt(3) * (-c_x * Math.cos(theta) - c_z * Math.sin(theta)));
 		double y = (Math.sqrt(3) * point.y - Math.sqrt(3) * c_y);
 		double z = (f + e * point.z * Math.cos(theta) - e * x * Math.sin(theta) + e * (c_x * Math.sin(theta) - c_z * Math.cos(theta)));
 		double bigW = (-c_z * Math.cos(theta) + point.z * Math.cos(theta) + c_x * Math.sin(theta) - point.x * Math.sin(theta));
-		
-//		double x = point.x * zoom;
-//		double y = point.y * zoom;
-//		double z = point.z * e + f;
-//		double bigW = point.z;
 
 		double[] result = {x, y, z, bigW};
 
