@@ -8,14 +8,12 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.util.Iterator;
 
-import cs355.Camera;
 import cs355.GUIFunctions;
 import cs355.controller.IControllerState.stateType;
 import cs355.model.drawing.*;
 import cs355.model.scene.Point3D;
 import cs355.model.scene.SceneModel;
 import cs355.solution.CS355;
-import javafx.scene.Scene;
 
 public class Controller implements CS355Controller {
 
@@ -51,7 +49,7 @@ public class Controller implements CS355Controller {
 		this.updating = false;
 		this.viewCenter = new Point2D.Double(0,0);
 		this.state = new ControllerNothingState();
-		SceneModel.instance().setCameraPosition(new Point3D(0f, 1.5f, -25f));
+		SceneModel.instance().setCameraPosition(new Point3D(0f, 1.5f, 25f));
 		this.cameraHome = SceneModel.instance().getCameraPosition();
 		this.rotationHome = SceneModel.instance().getYaw();
 	}
@@ -234,7 +232,7 @@ public class Controller implements CS355Controller {
 				
 				case KeyEvent.VK_H:
 					SceneModel.instance().setCameraPosition(cameraHome);
-					SceneModel.instance().setCameraRotation(rotationHome);
+					SceneModel.instance().setCameraRotation(Math.toDegrees(rotationHome));
 					break;
 			}
 		}
@@ -477,6 +475,7 @@ public class Controller implements CS355Controller {
 	/* Transforms - 3D Objects */
 	
 	public double[] threeDWorldToClip(Point3D point) {
+		//TODO
 		float theta = (float) SceneModel.instance().getYaw();
 		double c_x = SceneModel.instance().getCameraPosition().x;
 		double c_y = SceneModel.instance().getCameraPosition().y;
@@ -484,10 +483,21 @@ public class Controller implements CS355Controller {
 		double e = (farPlane + nearPlane) / (farPlane - nearPlane);
 		double f = (-2 * nearPlane * farPlane) / (farPlane - nearPlane);
 
-		double x = (Math.sqrt(3) * point.x * Math.cos(theta) + Math.sqrt(3) * point.z * Math.sin(theta) + Math.sqrt(3) * (-c_x * Math.cos(theta) - c_z * Math.sin(theta)));
-		double y = (Math.sqrt(3) * point.y - Math.sqrt(3) * c_y);
-		double z = (f + e * point.z * Math.cos(theta) - e * x * Math.sin(theta) + e * (c_x * Math.sin(theta) - c_z * Math.cos(theta)));
+		//World to camera translate
+		double x = point.x - c_x;
+		double y = point.y - c_y;
+		double z = point.z - c_z;
+		
+		//World to camera rotate
+		x = Math.sqrt(3) * x * Math.cos(theta) + Math.sqrt(3) * z * Math.sin(theta) + Math.sqrt(3);
+		y = Math.sqrt(3) * y;
+		z = f + e * z * Math.cos(theta) - e * x * Math.sin(theta);
 		double bigW = (-c_z * Math.cos(theta) + point.z * Math.cos(theta) + c_x * Math.sin(theta) - point.x * Math.sin(theta));
+		
+//		double x = (Math.sqrt(3) * point.x * Math.cos(theta) + Math.sqrt(3) * point.z * Math.sin(theta) + Math.sqrt(3) * (-c_x * Math.cos(theta) - c_z * Math.sin(theta)));
+//		double y = (Math.sqrt(3) * point.y - Math.sqrt(3) * c_y);
+//		double z = (f + e * point.z * Math.cos(theta) - e * x * Math.sin(theta) + e * (c_x * Math.sin(theta) - c_z * Math.cos(theta)));
+//		double bigW = (-c_z * Math.cos(theta) + point.z * Math.cos(theta) + c_x * Math.sin(theta) - point.x * Math.sin(theta));
 
 		double[] result = {x, y, z, bigW};
 
@@ -495,12 +505,8 @@ public class Controller implements CS355Controller {
 	}
 
 	public Point3D clipToScreen(Point3D point) {
-		
-//		double x = (-viewCenter.x + 1024 + (1024 * point.x)) * zoom;
-//		double y = -viewCenter.y + 1024 * zoom - 1024 * point.y * zoom;
-//		double y = (-viewCenter.y + 1024 - (1024 * point.y)) * zoom;
-		double x = 1024 + (1024 * point.x);
-		double y = 1024 - (1024 * point.y);
+		double x = (1024 + (1024 * point.x));
+		double y = (1024 - (1024 * point.y));
 		return new Point3D(x, y, 1);
 	}
 

@@ -44,7 +44,7 @@ public class CS355Scene extends Observable {
 
 			// Populate the object with the new data.
 			this.camPos = s.camPos;
-			this.camRot = s.camRot;
+			this.camRot = s.camRot + 180.0;
 			this.insts = s.insts;
 		}
 		catch (Exception ex) {
