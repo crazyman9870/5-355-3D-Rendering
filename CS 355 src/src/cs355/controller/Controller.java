@@ -53,7 +53,7 @@ public class Controller implements CS355Controller {
 		this.state = new ControllerNothingState();
 		SceneModel.instance().setCameraPosition(new Point3D(0f, 1.5f, -25f));
 		this.cameraHome = SceneModel.instance().getCameraPosition();
-		this.rotationHome = SceneModel.instance().getCameraRotation();
+		this.rotationHome = SceneModel.instance().getYaw();
 	}
 	
 	/* Mouse Events */
@@ -217,11 +217,11 @@ public class Controller implements CS355Controller {
 					break;
 				
 				case KeyEvent.VK_Q:
-					SceneModel.instance().yaw(this.movement/8);
+					SceneModel.instance().yaw(this.movement);
 					break;
 				
 				case KeyEvent.VK_E:
-					SceneModel.instance().yaw(-this.movement/8);
+					SceneModel.instance().yaw(-this.movement);
 					break;
 				
 				case KeyEvent.VK_R:
@@ -259,7 +259,7 @@ public class Controller implements CS355Controller {
 	public void openScene(File file) {
 		SceneModel.instance().open(file);
 		this.cameraHome = SceneModel.instance().getCameraPosition();
-		this.rotationHome = SceneModel.instance().getCameraRotation();
+		this.rotationHome = SceneModel.instance().getYaw();
 		GUIFunctions.refresh();
 	}
 
@@ -477,7 +477,7 @@ public class Controller implements CS355Controller {
 	/* Transforms - 3D Objects */
 	
 	public double[] threeDWorldToClip(Point3D point) {
-		float theta = (float) SceneModel.instance().getCameraRotation();
+		float theta = (float) SceneModel.instance().getYaw();
 		double c_x = SceneModel.instance().getCameraPosition().x;
 		double c_y = SceneModel.instance().getCameraPosition().y;
 		double c_z = SceneModel.instance().getCameraPosition().z;
