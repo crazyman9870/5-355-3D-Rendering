@@ -484,20 +484,18 @@ public class Controller implements CS355Controller {
 		double f = (-2 * nearPlane * farPlane) / (farPlane - nearPlane);
 
 		//World to camera translate
-		double x = point.x - c_x;
-		double y = point.y - c_y;
-		double z = point.z - c_z;
+		double x1 = point.x - c_x;
+		double y1 = point.y - c_y;
+		double z1 = point.z - c_z;
 		
 		//World to camera rotate
-		x = Math.sqrt(3) * x * Math.cos(theta) + Math.sqrt(3) * z * Math.sin(theta) + Math.sqrt(3);
-		y = Math.sqrt(3) * y;
-		z = f + e * z * Math.cos(theta) - e * x * Math.sin(theta);
+		double x2 = x1 * Math.cos(theta) + z1 * Math.sin(theta);
+		double z2 = -x1 * Math.sin(theta) + z1 * Math.cos(theta);
+
+		double x = x2 * Math.sqrt(3) + Math.sqrt(3);
+		double y = y1 * Math.sqrt(3);
+		double z = f + e * z2;		
 		double bigW = (-c_z * Math.cos(theta) + point.z * Math.cos(theta) + c_x * Math.sin(theta) - point.x * Math.sin(theta));
-		
-//		double x = (Math.sqrt(3) * point.x * Math.cos(theta) + Math.sqrt(3) * point.z * Math.sin(theta) + Math.sqrt(3) * (-c_x * Math.cos(theta) - c_z * Math.sin(theta)));
-//		double y = (Math.sqrt(3) * point.y - Math.sqrt(3) * c_y);
-//		double z = (f + e * point.z * Math.cos(theta) - e * x * Math.sin(theta) + e * (c_x * Math.sin(theta) - c_z * Math.cos(theta)));
-//		double bigW = (-c_z * Math.cos(theta) + point.z * Math.cos(theta) + c_x * Math.sin(theta) - point.x * Math.sin(theta));
 
 		double[] result = {x, y, z, bigW};
 
