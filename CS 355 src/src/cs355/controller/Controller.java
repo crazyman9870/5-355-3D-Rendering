@@ -50,7 +50,7 @@ public class Controller implements CS355Controller {
 		this.viewCenter = new Point2D.Double(0,0);
 		this.state = new ControllerNothingState();
 		SceneModel.instance().setCameraPosition(new Point3D(0f, 1.5f, 25f));
-		this.cameraHome = SceneModel.instance().getCameraPosition();
+		this.cameraHome = new Point3D(0f, 1.5f, 25f);
 		this.rotationHome = SceneModel.instance().getYaw();
 	}
 	
