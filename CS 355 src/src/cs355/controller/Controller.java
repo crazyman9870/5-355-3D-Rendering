@@ -493,12 +493,12 @@ public class Controller implements CS355Controller {
 		return transform;
 	}
 	
-	public double[] threeDWorldToClip(Point3D point) {
+	public double[] threeDWorldToClip(Point3D point, Instance inst) {
 		//TODO
-		float theta = (float) SceneModel.instance().getYaw();
-		double c_x = SceneModel.instance().getCameraPosition().x;
-		double c_y = SceneModel.instance().getCameraPosition().y;
-		double c_z = SceneModel.instance().getCameraPosition().z;
+		float theta = (float) (SceneModel.instance().getYaw());
+		double c_x = SceneModel.instance().getCameraPosition().x + inst.getPosition().x;
+		double c_y = SceneModel.instance().getCameraPosition().y + inst.getPosition().y;
+		double c_z = SceneModel.instance().getCameraPosition().z + inst.getPosition().z;
 		double e = (farPlane + nearPlane) / (farPlane - nearPlane);
 		double f = (-2 * nearPlane * farPlane) / (farPlane - nearPlane);
 
@@ -516,7 +516,7 @@ public class Controller implements CS355Controller {
 		double y = y1 * Math.sqrt(3);
 		double z = f + e * z2;		
 		double bigW = (-c_z * Math.cos(theta) + point.z * Math.cos(theta) + c_x * Math.sin(theta) - point.x * Math.sin(theta));
-
+		
 		double[] result = {x, y, z, bigW};
 
 		return result;
