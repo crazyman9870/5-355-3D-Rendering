@@ -229,12 +229,14 @@ public class View implements ViewRefresher {
 
 		ArrayList<Instance> theHood = SceneModel.instance().instances();
 //		System.out.println("OBJECTS LIST SIZE = " + theHood.size());
-		g2d.setTransform(Controller.instance().worldToView());
+//		g2d.setTransform(Controller.instance().worldToView());
 		for(Instance inst : theHood) {
+			g2d.setTransform(Controller.instance().objectToView3D(inst));
 			g2d.setColor(inst.getColor());
 			List<Line3D> list = inst.getModel().getLines();
 //			System.out.println("LINE LIST SIZE = " + list.size());
 			for(Line3D l : list) {
+				
 				double[] startCoord = Controller.instance().threeDWorldToClip(l.start);
 				double[] endCoord = Controller.instance().threeDWorldToClip(l.end);
 				if (!Controller.instance().clipTest(startCoord, endCoord)) {

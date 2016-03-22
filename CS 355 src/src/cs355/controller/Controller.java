@@ -11,6 +11,7 @@ import java.util.Iterator;
 import cs355.GUIFunctions;
 import cs355.controller.IControllerState.stateType;
 import cs355.model.drawing.*;
+import cs355.model.scene.Instance;
 import cs355.model.scene.Point3D;
 import cs355.model.scene.SceneModel;
 import cs355.solution.CS355;
@@ -473,6 +474,24 @@ public class Controller implements CS355Controller {
 	}
 	
 	/* Transforms - 3D Objects */
+	
+	public AffineTransform objectToWorld3D(Instance inst) {
+		AffineTransform transform = new AffineTransform();
+		//Translation
+		transform.concatenate(new AffineTransform(1.0, 0, 0, 1.0, inst.getPosition().x, inst.getPosition().y));
+		//Rotation
+		transform.concatenate(new AffineTransform(Math.cos(inst.getRotAngle()), Math.sin(inst.getRotAngle()), -Math.sin(inst.getRotAngle()), Math.cos(inst.getRotAngle()), 0, 0));
+		return transform;
+	}
+	
+	public AffineTransform objectToView3D(Instance inst) {
+		AffineTransform transform = new AffineTransform();
+		// World to View
+        transform.concatenate(worldToView());
+		// Object to World
+		transform.concatenate(objectToWorld3D(inst));
+		return transform;
+	}
 	
 	public double[] threeDWorldToClip(Point3D point) {
 		//TODO
