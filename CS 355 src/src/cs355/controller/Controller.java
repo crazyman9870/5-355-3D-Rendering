@@ -183,7 +183,7 @@ public class Controller implements CS355Controller {
 
 	@Override
 	public void toggle3DModelDisplay() {
-		System.out.println("3D BUTTON");
+//		System.out.println("3D BUTTON");
 		this.state = new Controller3DState();
 		Model.instance().changeMade();
 		
@@ -492,6 +492,7 @@ public class Controller implements CS355Controller {
 		double x2 = x1 * Math.cos(theta) + z1 * Math.sin(theta);
 		double z2 = -x1 * Math.sin(theta) + z1 * Math.cos(theta);
 
+		//Camera to Clip
 		double x = x2 * Math.sqrt(3) + Math.sqrt(3);
 		double y = y1 * Math.sqrt(3);
 		double z = f + e * z2;		
